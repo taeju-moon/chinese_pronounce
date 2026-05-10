@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중국어 병음 마스터 (Pinyin Mastery)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(-45deg, #0f172a, #1e1b4b, #312e81, #1e3a8a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            z-index: 10;
+        }
+
+        header {
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .progress {
+            font-size: 1rem;
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .text-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e2e8f0;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.85rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.2s;
+        }
+
+        .text-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .card-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .flashcard {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 30px;
+            height: 320px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .flashcard:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .flashcard::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.08), transparent);
+            transform: skewX(-20deg);
+            animation: shine 4s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 200%; }
+            100% { left: 200%; }
+        }
+
+        .pinyin-text {
+            font-size: 6rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+        }
+
+        .hint-text {
+            font-size: 1rem;
+            color: #94a3b8;
+            margin-top: 1rem;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
+        .animate-pop {
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.7) translateY(20px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1.2rem;
+            border-radius: 20px;
+            border: none;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            box-shadow: 0 15px 25px -5px rgba(99, 102, 241, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(1px) scale(0.96);
+        }
+        
+        .empty-state {
+            font-size: 2rem !important;
+            line-height: 1.4;
+        }
+
+        /* Particles */
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float-up 1s ease-out forwards;
+            z-index: 100;
+        }
+
+        @keyframes float-up {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100px) scale(0); opacity: 0; }
+        }
+
+        /* Keyboard hint */
+        .keyboard-hint {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Pinyin Mastery</h1>
+            <div class="progress">
+                진행도: <span id="learned-count" style="color: #60a5fa; font-weight: 600;">0</span> / <span id="total-count">410</span> 마스터
+            </div>
+            <div class="btn-group">
+                <button id="reset-btn" class="text-btn">🔄 진행도 초기화</button>
+                <button id="audio-btn" class="text-btn">🔊 자동 발음: 켜짐</button>
+            </div>
+        </header>
+
+        <main class="card-container">
+            <div class="flashcard" id="flashcard" title="클릭해서 발음 듣기">
+                <div class="pinyin-text" id="pinyin-display">시작하기</div>
+                <div class="hint-text" id="hint-display">화면을 클릭하면 시작합니다</div>
+            </div>
+            
+            <div class="controls">
+                <button id="wrong-btn" class="btn btn-secondary">
+                    <span>🤔</span> 나중에 다시
+                </button>
+                <button id="right-btn" class="btn btn-primary">
+                    <span>✨</span> 맞음 (제외)
+                </button>
+            </div>
+
+            <div class="keyboard-hint">
+                키보드: [Space] 발음듣기 · [←] 나중에 다시 · [→] 맞음
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 400여개의 표준 병음 목록 (성조 제외)
+        const allPinyins = [
+            "a", "ai", "an", "ang", "ao",
+            "ba", "bai", "ban", "bang", "bao", "bei", "ben", "beng", "bi", "bian", "biao", "bie", "bin", "bing", "bo", "bu",
+            "ca", "cai", "can", "cang", "cao", "ce", "cen", "ceng", "cha", "chai", "chan", "chang", "chao", "che", "chen", "cheng", "chi", "chong", "chou", "chu", "chua", "chuai", "chuan", "chuang", "chui", "chun", "chuo", "ci", "cong", "cou", "cu", "cuan", "cui", "cun", "cuo",
+            "da", "dai", "dan", "dang", "dao", "de", "dei", "deng", "di", "dian", "diao", "die", "ding", "diu", "dong", "dou", "du", "duan", "dui", "dun", "duo",
+            "e", "ei", "en", "eng", "er",
+            "fa", "fan", "fang", "fei", "fen", "feng", "fo", "fou", "fu",
+            "ga", "gai", "gan", "gang", "gao", "ge", "gei", "gen", "geng", "gong", "gou", "gu", "gua", "guai", "guan", "guang", "gui", "gun", "guo",
+            "ha", "hai", "han", "hang", "hao", "he", "hei", "hen", "heng", "hong", "hou", "hu", "hua", "huai", "huan", "huang", "hui", "hun", "huo",
+            "ji", "jia", "jian", "jiang", "jiao", "jie", "jin", "jing", "jiong", "jiu", "ju", "juan", "jue", "jun",
+            "ka", "kai", "kan", "kang", "kao", "ke", "ken", "keng", "kong", "kou", "ku", "kua", "kuai", "kuan", "kuang", "kui", "kun", "kuo",
+            "la", "lai", "lan", "lang", "lao", "le", "lei", "leng", "li", "lia", "lian", "liang", "liao", "lie", "lin", "ling", "liu", "long", "lou", "lu", "luan", "lun", "luo", "lü", "lüe",
+            "ma", "mai", "man", "mang", "mao", "me", "mei", "men", "meng", "mi", "mian", "miao", "mie", "min", "ming", "miu", "mo", "mou", "mu",
+            "na", "nai", "nan", "nang", "nao", "ne", "nei", "nen", "neng", "ni", "nian", "niang", "niao", "nie", "nin", "ning", "niu", "nong", "nou", "nu", "nuan", "nuo", "nü", "nüe",
+            "o", "ou",
+            "pa", "pai", "pan", "pang", "pao", "pei", "pen", "peng", "pi", "pian", "piao", "pie", "pin", "ping", "po", "pou", "pu",
+            "qi", "qia", "qian", "qiang", "qiao", "qie", "qin", "qing", "qiong", "qiu", "qu", "quan", "que", "qun",
+            "ran", "rang", "rao", "re", "ren", "reng", "ri", "rong", "rou", "ru", "rua", "ruan", "rui", "run", "ruo",
+            "sa", "sai", "san", "sang", "sao", "se", "sen", "seng", "sha", "shai", "shan", "shang", "shao", "she", "shei", "shen", "sheng", "shi", "shou", "shu", "shua", "shuai", "shuan", "shuang", "shui", "shun", "shuo", "si", "song", "sou", "su", "suan", "sui", "sun", "suo",
+            "ta", "tai", "tan", "tang", "tao", "te", "teng", "ti", "tian", "tiao", "tie", "ting", "tong", "tou", "tu", "tuan", "tui", "tun", "tuo",
+            "wa", "wai", "wan", "wang", "wei", "wen", "weng", "wo", "wu",
+            "xi", "xia", "xian", "xiang", "xiao", "xie", "xin", "xing", "xiong", "xiu", "xu", "xuan", "xue", "xun",
+            "ya", "yan", "yang", "yao", "ye", "yi", "yin", "ying", "yo", "yong", "you", "yu", "yuan", "yue", "yun",
+            "za", "zai", "zan", "zang", "zao", "ze", "zei", "zen", "zeng", "zha", "zhai", "zhan", "zhang", "zhao", "zhe", "zhen", "zheng", "zhi", "zhong", "zhou", "zhu", "zhua", "zhuai", "zhuan", "zhuang", "zhui", "zhun", "zhuo", "zi", "zong", "zou", "zu", "zuan", "zui", "zun", "zuo"
+        ];
+
+        // State
+        let mastered = JSON.parse(localStorage.getItem('masteredPinyins') || '[]');
+        let currentPool = allPinyins.filter(p => !mastered.includes(p));
+        let currentPinyin = null;
+        let isStarted = false;
+        let autoAudio = true;
+
+        // DOM Elements
+        const pinyinDisplay = document.getElementById('pinyin-display');
+        const hintDisplay = document.getElementById('hint-display');
+        const learnedCount = document.getElementById('learned-count');
+        const totalCount = document.getElementById('total-count');
+        
+        function updateProgress() {
+            learnedCount.innerText = mastered.length;
+            totalCount.innerText = allPinyins.length;
+        }
+
+        function speak(text) {
+            if (!text) return;
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'zh-CN';
+            utterance.rate = 0.85; 
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function createParticles(x, y) {
+            for(let i=0; i<12; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                document.body.appendChild(particle);
+                
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 60 + 30;
+                
+                particle.style.left = (x - 4) + 'px'; // Center particle
+                particle.style.top = (y - 4) + 'px';
+                
+                // Set custom properties for the animation
+                particle.style.setProperty('--dx', `${Math.cos(angle) * distance}px`);
+                particle.style.setProperty('--dy', `${Math.sin(angle) * distance}px`);
+                
+                particle.animate([
+                    { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                    { transform: `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance - 50}px) scale(0)`, opacity: 0 }
+                ], {
+                    duration: 800 + Math.random() * 400,
+                    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                    fill: 'forwards'
+                });
+                
+                setTimeout(() => particle.remove(), 1500);
+            }
+        }
+
+        function nextPinyin() {
+            if (currentPool.length === 0) {
+                pinyinDisplay.innerHTML = `<span class="empty-state">🎉<br>모든 발음을<br>마스터했습니다!</span>`;
+                pinyinDisplay.classList.remove('pinyin-text');
+                hintDisplay.innerText = "초기화 버튼을 눌러 다시 시작하세요";
+                currentPinyin = null;
+                return;
+            }
+            
+            pinyinDisplay.classList.add('pinyin-text');
+            const randomIndex = Math.floor(Math.random() * currentPool.length);
+            currentPinyin = currentPool[randomIndex];
+            
+            // Animation Trigger
+            pinyinDisplay.classList.remove('animate-pop');
+            void pinyinDisplay.offsetWidth;
+            pinyinDisplay.classList.add('animate-pop');
+            
+            pinyinDisplay.innerText = currentPinyin;
+            hintDisplay.innerText = "클릭해서 발음 다시 듣기";
+            
+            if (autoAudio && isStarted) {
+                speak(currentPinyin);
+            }
+        }
+
+        function handleStart(e) {
+            if (!isStarted) {
+                isStarted = true;
+                nextPinyin();
+            } else if (currentPinyin) {
+                speak(currentPinyin);
+            }
+        }
+
+        function markRight(e) {
+            if (!isStarted) return handleStart();
+            if (!currentPinyin) return;
+            
+            mastered.push(currentPinyin);
+            localStorage.setItem('masteredPinyins', JSON.stringify(mastered));
+            
+            currentPool = currentPool.filter(p => p !== currentPinyin);
+            updateProgress();
+            
+            // Particle effect on the button
+            if(e && e.clientX) {
+                createParticles(e.clientX, e.clientY);
+            } else {
+                // If keyboard shortcut used, create particles in center
+                const rect = pinyinDisplay.getBoundingClientRect();
+                createParticles(rect.left + rect.width/2, rect.top + rect.height/2);
+            }
+            
+            nextPinyin();
+        }
+
+        function markWrong() {
+            if (!isStarted) return handleStart();
+            nextPinyin();
+        }
+
+        function resetProgress() {
+            if(confirm('진행 상황을 정말 초기화하시겠습니까? (저장된 기록이 삭제됩니다)')) {
+                mastered = [];
+                localStorage.removeItem('masteredPinyins');
+                currentPool = [...allPinyins];
+                updateProgress();
+                if(isStarted) nextPinyin();
+            }
+        }
+
+        function toggleAudio() {
+            autoAudio = !autoAudio;
+            document.getElementById('audio-btn').innerText = autoAudio ? "🔊 자동 발음: 켜짐" : "🔈 자동 발음: 꺼짐";
+            if(autoAudio && currentPinyin) speak(currentPinyin);
+        }
+
+        // Event Listeners
+        document.getElementById('right-btn').addEventListener('click', markRight);
+        document.getElementById('wrong-btn').addEventListener('click', markWrong);
+        document.getElementById('reset-btn').addEventListener('click', resetProgress);
+        document.getElementById('audio-btn').addEventListener('click', toggleAudio);
+        document.getElementById('flashcard').addEventListener('click', handleStart);
+        
+        // Keyboard Shortcuts
+        document.addEventListener('keydown', (e) => {
+            if(e.code === 'Space') {
+                e.preventDefault();
+                if(!isStarted) handleStart();
+                else if(currentPinyin) speak(currentPinyin);
+            } else if(e.code === 'ArrowRight') {
+                e.preventDefault();
+                markRight();
+            } else if(e.code === 'ArrowLeft') {
+                e.preventDefault();
+                markWrong();
+            }
+        });
+
+        // Init
+        updateProgress();
+    </script>
+</body>
+</html>
